@@ -2,12 +2,8 @@ package com.example.matching;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +21,7 @@ public class GameGridView extends AppCompatActivity {
     static int taps;
     ImageButton cardFlip1;
     ImageButton cardFlip2;
-    String strCard1;
+    TextView strCard1;
     int points;
     private  ArrayList<Character> cards;
 
@@ -46,6 +42,7 @@ public class GameGridView extends AppCompatActivity {
         adapter = new MyAdapter(cards, this);
         gv.setAdapter(adapter);
     }
+
 
     public class MyAdapter extends BaseAdapter {
         ArrayList<Character> cd;
@@ -80,64 +77,79 @@ public class GameGridView extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // 1
-            final String cardChar = cd.get(position).toString();
 
-            // 2
             if (convertView == null) {
                 final LayoutInflater layoutInflater = LayoutInflater.from(con);
                 convertView = layoutInflater.inflate(R.layout.single_card_layout, null);
+
+                final ImageButton ib = convertView.findViewById(R.id.card);
+                final TextView tv = convertView.findViewById(R.id.card_text);
+
+                final ViewHolder viewHolder = new ViewHolder(ib, tv);
+                convertView.setTag(viewHolder);
+
             }
 
-            // 3
-            final ImageButton ib = convertView.findViewById(R.id.card);
-            final TextView tv = convertView.findViewById(R.id.card_text);
+            final ViewHolder viewHolder = (ViewHolder)convertView.getTag();
+            viewHolder.tv.setText(cd.get(position).toString());
 
-            // 4
-            tv.setText(cardChar);
+            return convertView;
+        }
+
+
+
+    }
+
+    public class ViewHolder {
+        ImageButton ib;
+        TextView tv;
+
+        public ViewHolder(ImageButton b, TextView v) {
+            ib = b;
+            tv = v;
 
             ib.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (taps < 2) {
                         ib.setVisibility(View.INVISIBLE);
-                        setTaps(ib, tv.getText().toString().trim());
+                        setTaps(ib, tv);
                     }
                 }
             });
-
-            return convertView;
         }
 
-        private void setTaps(ImageButton card, String s) {
-            if (taps == 0) {
-                cardFlip1 = card;
-                strCard1 = s;
-                ++taps;
+    }
+
+    private void setTaps(ImageButton card, TextView chr) {
+        if (taps == 0) {
+            cardFlip1 = card;
+            strCard1 = chr;
+            ++taps;
+        } else {
+            ++taps;
+            cardFlip2 = card;
+            if (strCard1.getText().toString().trim().equals(chr.getText().toString().trim())) {
+                points++;
+                strCard1.setVisibility(View.INVISIBLE);
+                chr.setVisibility(View.INVISIBLE);
+                //TODO:Winning screen
+                taps = 0;
             } else {
-                ++taps;
-                cardFlip2 = card;
-                if (strCard1.equals(s)) {
-                    points++;
-                    //TODO:Winning screen
-                    taps = 0;
-                } else {
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            flipBack();
-                        }
-                    }, 1000);   //1 seconds
-                }
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        flipBack();
+                    }
+                }, 500);   //.5 seconds
             }
         }
+    }
 
-        private void flipBack() {
-            cardFlip1.setVisibility(View.VISIBLE);
-            cardFlip2.setVisibility(View.VISIBLE);
-            taps = 0;
-        }
-
+    private void flipBack() {
+        cardFlip1.setVisibility(View.VISIBLE);
+        cardFlip2.setVisibility(View.VISIBLE);
+        taps = 0;
     }
 
 }
