@@ -10,11 +10,12 @@
         android:id="@+id/welcome"
         android:layout_centerHorizontal="true"
         android:layout_alignTop="@+id/button"
-        android:layout_marginTop="-50dp"
-        android:textSize="30sp"
+        android:layout_marginTop="-150dp"
+        android:textSize="50sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Matching!" />
+        android:text="Welcome to\nMatching!"
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/button"
@@ -23,5 +24,15 @@
         android:textSize="50sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start" />
+        android:text="20 Cards" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="50sp"
+        android:text="30 Cards" />
 </RelativeLayout>
